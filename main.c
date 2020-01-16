@@ -4,7 +4,7 @@
 typedef struct proces
 {
 	char nume[5];
-	int timpOcupare; // pana la cat o sa dureze
+	int timpOcupare;
 	int timpInceput; // cand ajunge la cpu
 	int prioritate;
 	int timpAsteptare, timpProcesare;
@@ -348,7 +348,8 @@ void SJF_NP(procese P[],int n)
 }
 
 //Shortest Job First - Pre-emptive
-void SJF_P(procese P[],int n){
+void SJF_P(procese P[],int n)
+{
 	int i, t_total=0, timpCurent, b[10], min_timpInceput, j, x, min_timpOcupare;
 	int sumaTimpAsteptare = 0, sumaTimpProcesare = 0;
 	float timpMediuAsteptare = 0.0, timpMediuProcesare = 0.0;
@@ -372,39 +373,39 @@ void SJF_P(procese P[],int n){
     {
 
             if(b[i] > 0 && temp[i].timpInceput <= timpCurent)
-                b[i]--;
+                b[i]--; // daca nu am terminat procesul i
 
             if(i!=j)
-                printf(" %d %s",timpCurent,temp[i].nume);
+                printf(" %d %s", timpCurent, temp[i].nume);
 
-            if(b[i]<=0 && temp[i].verificat != 1)
+            if(b[i] <= 0 && temp[i].verificat != 1)
             {
 
                 temp[i].verificat = 1;
                 temp[i].timpAsteptare = (timpCurent+1) - temp[i].timpOcupare - temp[i].timpInceput;
                 temp[i].timpProcesare = (timpCurent+1) - temp[i].timpInceput;
-                sumaTimpAsteptare+=temp[i].timpAsteptare;
-                sumaTimpProcesare+=temp[i].timpProcesare;
+                sumaTimpAsteptare += temp[i].timpAsteptare;
+                sumaTimpProcesare += temp[i].timpProcesare;
             }
-            j=i;
+            j = i;
             min_timpOcupare = 999;
 
             for(x = 0; x < n; x++)
             {
 
-			if(temp[x].timpInceput <= (timpCurent+1) && temp[x].verificat != 1)
-            {
-                if(min_timpOcupare != b[x] && min_timpOcupare > b[x])
+                if(temp[x].timpInceput <= (timpCurent+1) && temp[x].verificat != 1)
                 {
-                    min_timpOcupare = b[x];
-                    i = x;
+                    if(min_timpOcupare != b[x] && min_timpOcupare > b[x])
+                    {
+                        min_timpOcupare = b[x];
+                        i = x; // aflu procesul care e cel mai aproape de a fi terminat si continui cu el
+                    }
                 }
-            }
             }
 
     }
 
-	printf(" %d",timpCurent);
+	printf(" %d", timpCurent);
 
 	timpMediuAsteptare = (float)sumaTimpAsteptare/n;
 	timpMediuProcesare = (float)sumaTimpProcesare/n;
